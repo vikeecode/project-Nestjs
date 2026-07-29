@@ -70,7 +70,7 @@ export class AuthService {
           const token = await this.jwtService.signAsync(payload);
           const {password, ...userData } = user.toObject();
           console.log('JWT Token generated:', userData);
-
+          console.log('User logged in:', userData);
           return {
             message: 'User logged in successfully',
             access_token: token,
