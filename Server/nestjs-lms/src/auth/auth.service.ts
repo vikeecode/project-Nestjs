@@ -68,6 +68,10 @@ export class AuthService {
 
           const payload = {sub: user._id, email: user.email}
           const token = await this.jwtService.signAsync(payload);
+          if(!token){
+            return new UnauthorizedException('Token generation failed');
+          }
+          
           const {password, ...userData } = user.toObject();
           console.log('JWT Token generated:', userData);
           console.log('User logged in:', userData);

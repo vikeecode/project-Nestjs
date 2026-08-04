@@ -45,4 +45,17 @@ export class UserService {
         }
        
     }
+
+    //get user by id
+    async getUserId(id: string){
+        try{
+            const user = await this.userModel.findById(id);
+            return user;
+        }
+        catch(err:unknown){
+            console.error('Error finding user by ID:', err);
+            throw(err);
+        }
+      
+    }
 }
