@@ -5,13 +5,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Course } from 'src/course/schemas/course.schemas';
 
-
 @Injectable()
 export class CourseService {
- constructor(@InjectModel(Course.name, 'LMS') private courseModel: Model<Course>) {}
- async create(createCourseDto: CreateCourseDto) {
+  constructor(
+    @InjectModel(Course.name, 'LMS') private courseModel: Model<Course>,
+  ) {}
+  async create(createCourseDto: CreateCourseDto) {
     try {
-      const course =  await this.courseModel.create({
+      const course = await this.courseModel.create({
         name: createCourseDto.name,
         description: createCourseDto.description,
         image: createCourseDto.image,
@@ -19,33 +20,71 @@ export class CourseService {
         price: createCourseDto.price,
       });
       console.log('Course created successfully:', course);
-      return course;
-     }
-    catch (error) {
-      throw new InternalServerErrorException('Error creating course');
+      return {
+        message: 'Course created successfully',
+        course: course,
+      };
+    } catch (error) {
+      console.error(error);
+      throw error;
     }
   }
 
   async findAll() {
     try {
       const findAll = await this.courseModel.find();
-    console.log('Courses retrieved successfully:', findAll);
-    return findAll;
+      console.log('Courses retrieved successfully:', findAll);
+      return findAll;
     } catch (error) {
       throw new InternalServerErrorException('Error retrieving courses');
     }
   }
 
+  async findOne(id: string) {
+    try {
+      const findOne = await this.courseModel.findById(id);
+      console.log('Course retrieved successfully:', findOne);
+      findOne ? findOne : new InternalServerErrorException('Course not found');
 
-  findOne(id: number) {
-    return `This action returns a #${id} course`;
+      return findOne;
+    } catch (error) {
+      throw new InternalServerErrorException('Error finding course');
+    }
   }
 
-  update(id: number, updateCourseDto: UpdateCourseDto) {
-    return `This action updates a #${id} course`;
+  async update(id: string, updateCourseDto: UpdateCourseDto) {
+    try {
+      const updateCourse = await this.courseModel.findByIdAndUpdate(
+        id,
+        updateCourseDto,
+        { new: true },
+      );
+      if (!updateCourse) {
+        throw new InternalServerErrorException('Course not found');
+      }
+      console.log('Course updated successfully:', updateCourse);
+      return {
+        message: 'Course updated successfully',
+        course: updateCourse,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException('Error updating course');
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} course`;
+  async remove(id: string) {
+    try {
+      const removeCourse = await this.courseModel.findByIdAndDelete(id);
+      if (!removeCourse) {
+        throw new InternalServerErrorException('Course not found');
+      }
+      console.log('Course deleted successfully:', removeCourse);
+      return {
+        message: 'Course deleted successfully',
+        course: removeCourse,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException('Error deleting course');
+    }
   }
 }

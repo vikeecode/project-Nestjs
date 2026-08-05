@@ -11,7 +11,7 @@ export class Course {
   @Prop({ required: true })
   description?: string ;
 
-  @Prop({ required: false, unique: true })
+  @Prop({ required: false, unique: false })
   image?: string;
 
   @Prop({ required: true })
