@@ -7,10 +7,18 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
+import { Model } from 'mongoose';
+import { RevokedToken } from './schemas/logut.schema';
+import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private readonly jwtService: JwtService) {}
+   constructor(
+    private readonly jwtService: JwtService,
+
+    @InjectModel(RevokedToken.name, 'LMS')
+    private readonly revokedTokenModel: Model<RevokedToken>,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
@@ -23,6 +31,11 @@ export class AuthGuard implements CanActivate {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_SECRET,
       });
+
+      const revokedToken = await this.revokedTokenModel.findOne( { token });
+      if (revokedToken) {
+        throw new UnauthorizedException('Token has been revoked');
+      }
      
       request['user'] = payload;
     } catch {

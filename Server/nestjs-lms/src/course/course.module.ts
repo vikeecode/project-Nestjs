@@ -3,6 +3,7 @@ import { CourseService } from './course.service';
 import { CourseController } from './course.controller';
 import { Course, CourseSchema } from './schemas/course.schemas';
 import { MongooseModule } from '@nestjs/mongoose';
+import { RevokedToken, RevokedTokenSchema } from 'src/auth/schemas/logut.schema';
 
 @Module({
    imports: [
@@ -15,6 +16,10 @@ import { MongooseModule } from '@nestjs/mongoose';
       ],
       "LMS",
     ),
+     MongooseModule.forFeature([
+          { name: RevokedToken.name, schema: RevokedTokenSchema  },
+        ],
+        "LMS"),
   ],
   controllers: [CourseController],
   providers: [CourseService],

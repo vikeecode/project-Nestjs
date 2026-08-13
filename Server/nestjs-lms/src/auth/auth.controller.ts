@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Request, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterUserDto } from './dto/registerUser.dto';
 import { LoginUserDto } from './dto/loginUser.dto';
@@ -25,6 +25,7 @@ export class AuthController {
       const user = await this.authService.loginUser(LoginUserDto);
       return user;
     }
+
     @UseGuards(AuthGuard)
     @Get('Profile')
 
@@ -41,5 +42,22 @@ export class AuthController {
         role: user?.role
       };
     }
+
+    //verify email 
+    @Get('verify-email')
+    async verifyEmail(@Query("token") token: string) {
+      const verifyEmail =  await this.authService.VerifyEmail(token);
+      return verifyEmail;
+    }
+
+    //logout user
+    @UseGuards(AuthGuard)
+    @Post('logout')
+
+    async logoutUser(@Request() req) {
+     const logoutUser = await this.authService.logoutUser(req);
+     return logoutUser;
+    }
+    
 
 }

@@ -9,7 +9,6 @@ export class UserService {
      constructor(@InjectModel(User.name, 'LMS') private userModel: Model<User>) {}
      //register user 
    async createUser(registerUserDto: RegisterUserDto){
-
         try{
             const user =  await this.userModel.create({
             fname: registerUserDto.fname,

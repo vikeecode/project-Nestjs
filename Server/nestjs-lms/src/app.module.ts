@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { CourseModule } from './course/course.module';
+import { MailSenderServicesModule } from './mail-sender-services/mail-sender-services.module';
 
 
   @Module({
@@ -30,6 +31,7 @@ import { CourseModule } from './course/course.module';
     AuthModule,
     UserModule,
     CourseModule,
+    MailSenderServicesModule,
 
   ],
   controllers: [AppController],
