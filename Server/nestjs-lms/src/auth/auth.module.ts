@@ -6,6 +6,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { RevokedToken, RevokedTokenSchema } from './schemas/logut.schema';
+import { MailSenderServicesService } from './mail-sender-services.service';
 
 @Module({
   imports: [UserModule,
@@ -22,7 +23,7 @@ import { RevokedToken, RevokedTokenSchema } from './schemas/logut.schema';
   ],
   
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, MailSenderServicesService],
 
 })
 export class AuthModule {}

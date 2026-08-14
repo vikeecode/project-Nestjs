@@ -9,6 +9,7 @@ import { UnauthorizedException } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { RevokedToken, RevokedTokenDocument } from './schemas/logut.schema';
 import { error } from 'console';
+import { MailSenderServicesService } from './mail-sender-services.service';
 @Injectable()
 export class AuthService {
   constructor(
@@ -16,6 +17,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     @InjectModel(RevokedToken.name, 'LMS')
     private readonly revokedTokenModel: Model<RevokedTokenDocument>,
+      private readonly mailSenderService: MailSenderServicesService,
   ) {}
   async registerUser(registerDto: RegisterUserDto) {
     console.log('Registering user:', registerDto);
@@ -53,10 +55,13 @@ export class AuthService {
     console.log('JWT Token generated:', verificationToken);
 
     console.log('User created:', user);
-    return {
-      message: 'User registered successfully',
-      token: verificationToken,
-    };
+    if (user.email) {
+      await this.mailSenderService.sendVerificationEmail(user.email, verificationToken);
+    }
+   return {
+  message: 'Registration successful. Please verify your email.',
+  emailVerified: user.emailVerified,
+};
   }
 
   async loginUser(loginDto: LoginUserDto) {
@@ -83,6 +88,11 @@ export class AuthService {
     if (!isPasswordMatch) {
       return new UnauthorizedException('Invalid password');
     }
+    if (!user.emailVerified) {
+  throw new UnauthorizedException(
+    'Please verify your email before login',
+  );
+}
     // return a jwt token
 
     const payload = { sub: user._id, email: user.email };
@@ -103,7 +113,8 @@ export class AuthService {
 
   //verify email service
   async VerifyEmail(token: string) {
-    if(!token) {
+    try{
+      if(!token) {
       throw new UnauthorizedException('Token is required');
     }
 
@@ -139,10 +150,14 @@ export class AuthService {
     user.emailVerificationToken = undefined;
     user.emailVerificationExpires = undefined;
     await user.save();
-    
+
     return {
       message: 'Email verified successfully',
     };
+    }catch(err:unknown){
+      console.error('Error verifying email:', err);
+      throw(err);
+    }
     }
   
 
