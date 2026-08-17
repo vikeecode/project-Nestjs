@@ -197,4 +197,78 @@ export class AuthService {
       message: 'User logged out successfully',
     };
   }
+
+  //froget password service
+  async FrogetPassword(email: string) {
+    const user = await this.userService.findUserByEmail({ email});
+      if(!user) {
+        throw new UnauthorizedException('User not found');
+      }
+      const  resetToken = await this.jwtService.signAsync({ sub: user._id, email: user.email, type: 'forget-password' }, { expiresIn: '15m' });
+      if(! resetToken ){
+        throw new UnauthorizedException('Token generation failed');
+      }
+      user.forgetPasswordToken = resetToken;
+      user.forgetPasswordExpires = new Date(Date.now() + 15 * 60 * 1000);
+      const updatedUserPassword = await user.save();
+      if(!updatedUserPassword){
+        throw new UnauthorizedException('User not updated');
+      }
+      if (!user.email) {
+        throw new UnauthorizedException('User email not found');
+      }
+      const emailSent = await this.mailSenderService.sendPasswordResetEmail(user.email, resetToken);
+      if(!emailSent){
+        throw new UnauthorizedException('Email not sent');
+      }
+      return {
+        message: 'Email sent successfully',
+      };
+  }
+
+  //reset Password service 
+  async ResetPassword(token: string, newPassword:string) {
+    if (!token) {
+    throw new UnauthorizedException('Reset token is required');
+  }
+  let payload;
+
+  try {
+    payload = await this.jwtService.verifyAsync(token, {
+      secret: process.env.JWT_SECRET,
+    });
+  } catch(err){
+      throw new UnauthorizedException('Invalid token');
+  }
+
+  if (payload.type !== 'forget-password') {
+    throw new UnauthorizedException(
+      'Invalid reset token',
+    );
+  }
+
+  const user = await this.userService.getUserId(payload.sub);
+  if(!user) {
+    throw new UnauthorizedException('User not found');
+  }
+  if(user.forgetPasswordToken !== token ){
+    throw new UnauthorizedException('Invalid token');
+  }
+
+  if(!user.forgetPasswordExpires || user.forgetPasswordExpires < new Date()){
+    throw new UnauthorizedException('Token has expired');
+  }
+  const saltRounds = 10;
+  const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+  user.password = hashedPassword;
+  user.forgetPasswordToken = undefined;
+  user.forgetPasswordExpires = undefined;
+  const updatedUserPassword = await user.save();
+  if(!updatedUserPassword){
+    throw new UnauthorizedException('User not updated');
+  }
+  return {
+    message: 'Password reset successfully',
+  };
+  }
 }

@@ -30,6 +30,12 @@ emailVerificationExpires?: Date;
 
   @Prop({ default: Role.Student })
   role?:string;
+
+  @Prop()
+  forgetPasswordToken?: string;
+
+  @Prop()
+  forgetPasswordExpires?: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

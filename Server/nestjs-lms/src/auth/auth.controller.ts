@@ -58,6 +58,21 @@ export class AuthController {
      const logoutUser = await this.authService.logoutUser(req);
      return logoutUser;
     }
+
+    //forget password
+    @Post('forget-password')
+
+    async FrogetPasssword(@Body('email') email: string) {
+      const forgetPassword = await this.authService.FrogetPassword(email);
+      return forgetPassword;
+    }
+
+    //reset password
+    @Post('reset-password')
+    async resetPassword(@Body() body: { token: string;  newPassword: string;}) {
+      const resetpassword = await this.authService.ResetPassword(body.token, body.newPassword);
+      return resetpassword;
+    }
     
 
 }

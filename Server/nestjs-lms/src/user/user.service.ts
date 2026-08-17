@@ -6,6 +6,7 @@ import {User} from "../user/schemas/user.schema";
 import { LoginUserDto } from 'src/auth/dto/loginUser.dto';
 @Injectable()
 export class UserService {
+  FrogetPassword: any;
      constructor(@InjectModel(User.name, 'LMS') private userModel: Model<User>) {}
      //register user 
    async createUser(registerUserDto: RegisterUserDto){

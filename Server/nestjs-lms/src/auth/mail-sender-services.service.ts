@@ -34,4 +34,39 @@ export class MailSenderServicesService {
       message: 'Verification email sent successfully',
     };
   }
+
+  //forget password mail sender service 
+async sendPasswordResetEmail(
+  email: string,
+  token: string,
+) {
+  const resetUrl =
+    `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
+
+  const { data, error } = await this.resend.emails.send({
+    from: process.env.MAIL_FROM!,
+    to: [email],
+    subject: 'Reset your LMS password',
+    html: `
+      <h2>Reset Password</h2>
+
+      <p>We received a request to reset your password.</p>
+
+      <a href="${resetUrl}">
+        Reset Password
+      </a>
+
+      <p>This link will expire in 15 minutes.</p>
+    `,
+  });
+
+  if (error) {
+    console.error('Resend error:', error);
+    throw new Error(error.message);
+  }
+
+  console.log('Password reset email sent:', data);
+
+  return true;
+}
 }
