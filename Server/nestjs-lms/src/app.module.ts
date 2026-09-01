@@ -7,6 +7,8 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { CourseModule } from './course/course.module';
 import { BlogModule } from './blog/blog.module';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 
 
@@ -15,6 +17,16 @@ import { BlogModule } from './blog/blog.module';
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true,
+    }),
+
+    //late lamiting 
+     ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 10000,
+          limit: 5,
+        },
+      ],
     }),
 
     MongooseModule.forRoot(process.env.MONGODB_URL!, {
@@ -36,6 +48,12 @@ import { BlogModule } from './blog/blog.module';
 
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    }
+
+  ],
 })
 export class AppModule {}
