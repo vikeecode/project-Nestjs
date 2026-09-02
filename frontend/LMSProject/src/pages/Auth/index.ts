@@ -1,4 +1,4 @@
-import registerUser from "./register/registerUser";
+import registerUser from "./register/RegisterUser";
 
 
 export {registerUser};
