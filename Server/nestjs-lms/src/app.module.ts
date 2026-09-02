@@ -10,6 +10,11 @@ import { BlogModule } from './blog/blog.module';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
+// import {  RedisModule } from './redis-service/redis.module';
+import { CloudnaryService } from './cloudnary/cloudnary.service';
+import { CloudnaryModule } from './cloudnary/cloudnary.module';
+
+
 
 
   @Module({
@@ -45,6 +50,9 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
     UserModule,
     CourseModule,
     BlogModule,
+    CloudnaryModule,
+    // RedisModule
+
 
   ],
   controllers: [AppController],
@@ -52,7 +60,8 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
-    }
+    },
+    CloudnaryService
 
   ],
 })
