@@ -1,3 +1,5 @@
+import { TextField } from "@mui/material";
+
 interface InputProps {
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   value: string;
@@ -30,7 +32,10 @@ export default function Input({
       <label htmlFor={labelFor} className="sr-only">
         {labelText}
       </label>
-      <input
+      <TextField
+        label={labelText}
+        color="secondary"
+        focused
         onChange={handleChange}
         value={value}
         id={id}
