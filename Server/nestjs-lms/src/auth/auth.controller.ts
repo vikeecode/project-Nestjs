@@ -3,7 +3,6 @@ import { AuthService } from './auth.service';
 import { RegisterUserDto } from './dto/registerUser.dto';
 import { LoginUserDto } from './dto/loginUser.dto';
 import { AuthGuard } from './auth.guard';
-import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 import { Throttle } from '@nestjs/throttler';
 
