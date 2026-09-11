@@ -14,8 +14,12 @@ function Header({ heading, paragraph, linkName, linkUrl = "#" }: HeaderProps) {
       <div className="flex justify-center">
         <img
           alt=""
-          className="h-14 w-14"
-          src="../../assets/projectAssests/favicon"
+          className="h-14 w-14 text-2xl font-bold text-purple-600"
+          src="./src/assets/projectAssests/favicon/chat.png"
+          style={{
+            filter:
+              "brightness(0) saturate(100%) invert(25%) sepia(80%) saturate(3000%) hue-rotate(250deg)",
+          }}
         />
       </div>
       <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
