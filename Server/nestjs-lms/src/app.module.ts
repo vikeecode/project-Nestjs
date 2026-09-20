@@ -7,6 +7,13 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { CourseModule } from './course/course.module';
 import { BlogModule } from './blog/blog.module';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+
+// import {  RedisModule } from './redis-service/redis.module';
+import { CloudnaryService } from './cloudnary/cloudnary.service';
+import { CloudnaryModule } from './cloudnary/cloudnary.module';
+
 
 
 
@@ -15,6 +22,16 @@ import { BlogModule } from './blog/blog.module';
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true,
+    }),
+
+    //late lamiting 
+     ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 10000,
+          limit: 5,
+        },
+      ],
     }),
 
     MongooseModule.forRoot(process.env.MONGODB_URL!, {
@@ -33,9 +50,19 @@ import { BlogModule } from './blog/blog.module';
     UserModule,
     CourseModule,
     BlogModule,
+    CloudnaryModule,
+    // RedisModule
+
 
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+    CloudnaryService
+
+  ],
 })
 export class AppModule {}

@@ -3,8 +3,8 @@ import { AuthService } from './auth.service';
 import { RegisterUserDto } from './dto/registerUser.dto';
 import { LoginUserDto } from './dto/loginUser.dto';
 import { AuthGuard } from './auth.guard';
-import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('auth')
 export class AuthController {
@@ -20,6 +20,12 @@ export class AuthController {
     //login user 
 
     @Post('login')
+    @Throttle({
+      default: {
+      ttl: 60000,
+      limit: 3,
+    },
+})
 
     async loginUser(@Body() LoginUserDto: LoginUserDto) {
       const user = await this.authService.loginUser(LoginUserDto);
@@ -61,7 +67,12 @@ export class AuthController {
 
     //forget password
     @Post('forget-password')
-
+    @Throttle({
+      default: {
+      ttl: 60000,
+      limit: 3,
+    },
+})
     async FrogetPasssword(@Body('email') email: string) {
       const forgetPassword = await this.authService.FrogetPassword(email);
       return forgetPassword;
