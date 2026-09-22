@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 
+
 async function bootstrap() {
   console.log('Mongo URI:', process.env.MONGODB_URL);
   const app = await NestFactory.create(AppModule);
