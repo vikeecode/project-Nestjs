@@ -10,7 +10,7 @@ import { BlogModule } from './blog/blog.module';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
-// import {  RedisModule } from './redis-service/redis.module';
+import {  RedisModule } from './redis-service/redis.module';
 import { CloudnaryService } from './cloudnary/cloudnary.service';
 import { CloudnaryModule } from './cloudnary/cloudnary.module';
 
@@ -51,7 +51,7 @@ import { CloudnaryModule } from './cloudnary/cloudnary.module';
     CourseModule,
     BlogModule,
     CloudnaryModule,
-    // RedisModule
+     RedisModule
 
 
   ],

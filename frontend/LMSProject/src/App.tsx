@@ -2,6 +2,7 @@ import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { registerUser as RegisterUser } from "./pages/Auth";
 import { login as Login } from "./pages/Auth/login/index";
+import {forget as Forget} from "../src/pages/Auth/forgetPassword/index";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
             <Routes>
               <Route path="/register" element={<RegisterUser />} />
               <Route path="/login" element={<Login />} />
+               <Route path="/forgetpassword" element={<Forget />} />
             </Routes>
           </BrowserRouter>
         </div>
