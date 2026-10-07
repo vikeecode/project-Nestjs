@@ -18,6 +18,6 @@ function App() {
       </div>
     </>
   );
-}
+} //<span class="text-danger">*</span>
 
 export default App;
